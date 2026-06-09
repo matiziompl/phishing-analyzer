@@ -20,7 +20,7 @@ Gdy skrypt pobiera nową wiadomość, analizuje ją pod kątem następujących z
 
 1. Sklonuj to repozytorium na swój dysk:
    ```bash
-   git clone https://github.com/TwojaNazwa/phishing-analyzer.git
+   git clone https://github.com/matiziompl/phishing-analyzer.git
    cd phishing-analyzer
    ```
 2. Zainstaluj niezbędne biblioteki Pythona:
