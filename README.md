@@ -1,64 +1,64 @@
 # 🛡️ Gmail Phishing Analyzer
 
-W pełni automatyczny skrypt Python do monitorowania i analizowania wiadomości e-mail w Gmailu pod kątem zaawansowanych ataków phishingowych. 
+A fully automated Python script for monitoring and analyzing Gmail email messages for advanced phishing attacks.
 
-Skrypt wykorzystuje API Gmaila do pobierania poczty, a następnie poddaje ją wieloetapowej weryfikacji. Jeśli algorytm uzna wiadomość za próbę oszustwa, automatycznie nada jej w skrzynce wyraźną, czerwoną etykietę **Phishing** oraz wygeneruje szczegółowy raport Markdown na dysku.
+The script uses the Gmail API to fetch emails and then subjects them to multi-stage verification. If the algorithm identifies a message as a phishing attempt, it automatically flags it in your mailbox as suspicious.
 
-## 🚀 Jak to działa?
+## 🚀 How does it work?
 
-Gdy skrypt pobiera nową wiadomość, analizuje ją pod kątem następujących zagrożeń:
-1. **Analiza Kontekstowa:** Wykrywa słowa kluczowe budujące presję czasu lub strach (np. "zablokowane konto", "pilne", "weryfikacja", "natychmiast").
-2. **Weryfikacja Domeny Nadawcy:** Porównuje oryginalną domenę, z której wysłano e-mail (np. `paypal-support@scam.com`), z właściwymi adresami URL zaszytymi pod przyciskami (np. kliknij tutaj -> `http://malicious.com/login`).
-3. **Typosquatting:** Skrypt oblicza [odległość Levenshteina](https://pl.wikipedia.org/wiki/Odleg%C5%82o%C5%9B%C4%87_Levenshteina) dla wyodrębnionych linków względem znanych marek (np. wykryje, że `g00gle.com` lub `paypa1.com` to oszustwo).
+When the script retrieves a new message, it analyzes it for the following threats:
+1. **Contextual Analysis:** Detects keywords that create time pressure or fear (e.g., "account locked", "urgent", "verification", "immediately").
+2. **Sender Domain Verification:** Compares the original domain from which the email was sent (e.g., `paypal-support@scam.com`) with the legitimate URLs embedded in buttons (e.g., click here → paypal.com). If there's a mismatch, it's flagged.
+3. **Typosquatting:** The script calculates [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance) for extracted links against known brands (e.g., it will detect if you receive an email from "gogle.com" instead of "google.com").
 
-## 🛠️ Wymagania
+## 🛠️ Requirements
 
-- Zainstalowany **Python 3.x**
-- Posiadanie konta Google (Gmail)
+- Installed **Python 3.x**
+- A Google account (Gmail)
 
-## 📦 Instalacja
+## 📦 Installation
 
-1. Sklonuj to repozytorium na swój dysk:
+1. Clone this repository to your disk:
    ```bash
    git clone https://github.com/matiziompl/phishing-analyzer.git
    cd phishing-analyzer
    ```
-2. Zainstaluj niezbędne biblioteki Pythona:
+2. Install the required Python libraries:
    ```bash
    python -m pip install -r requirements.txt
    ```
 
-## 🔑 Konfiguracja dostępu (Google Cloud Console)
+## 🔑 Configuration (Google Cloud Console)
 
-Aby skrypt miał prawo bezpiecznie czytać Twoją skrzynkę bez podawania hasła, musisz utworzyć własny plik `credentials.json` przez protokół OAuth 2.0. To standardowa procedura narzucana przez Google dla zewnętrznych skryptów.
+For the script to safely read your mailbox without entering a password, you must create your own `credentials.json` file using the OAuth 2.0 protocol. This is a standard procedure enforced by Google.
 
-1. Wejdź na [Google Cloud Console](https://console.cloud.google.com/).
-2. Utwórz nowy projekt i przejdź do **APIs & Services > Library**.
-3. Wyszukaj i włącz (**Enable**) usługę **Gmail API**.
-4. W zakładce **OAuth consent screen** wybierz typ **External**, wypełnij nazwę i zapisz. **Ważne:** Na samym dole w sekcji **Test users** dodaj swój prywatny e-mail, którym będziesz logował się w skrypcie.
-5. Przejdź do zakładki **Credentials**, kliknij **Create Credentials** -> **OAuth client ID**. 
-6. Wybierz typ: **Desktop app**.
-7. Pobierz plik JSON ze swoim kluczem, zmień jego nazwę dokładnie na `credentials.json` i wrzuć go do głównego folderu tego skryptu.
+1. Go to [Google Cloud Console](https://console.cloud.google.com/).
+2. Create a new project and navigate to **APIs & Services > Library**.
+3. Search for and enable (**Enable**) the **Gmail API** service.
+4. On the **OAuth consent screen** tab, select type **External**, fill in the name, and save. **Important:** At the bottom in the **Test users** section, add your personal email address that you'll use to log in.
+5. Go to the **Credentials** tab, click **Create Credentials** → **OAuth client ID**.
+6. Select type: **Desktop app**.
+7. Download the JSON file with your key, rename it exactly to `credentials.json`, and upload it to the main folder of this script.
 
-## 🏃 Uruchomienie ręczne
+## 🏃 Manual Execution
 
-Aby pobrać i przeanalizować ostatnie 15 wiadomości, uruchom:
+To download and analyze the last 15 messages, run:
 ```bash
 python analyzer.py --count 15
 ```
 
-Przy pierwszym uruchomieniu otworzy się przeglądarka z prośbą o zalogowanie się Twoim kontem Gmail. Po potwierdzeniu zgód, obok skryptu pojawi się nowy plik `token.json`, a system wygeneruje raport w folderze `reports/`.
+On the first run, a browser window will open asking you to log in with your Gmail account. After confirming permissions, a new `token.json` file will appear next to the script, and the system will generate a report.
 
-## ⚙️ Harmonogram Windows (Codziennie o 9:00)
+## ⚙️ Windows Task Scheduler (Daily at 9:00 AM)
 
-Skrypt jest przygotowany do pracy w tle. Uruchom konsolę Windows PowerShell **jako administrator** w folderze projektu i wpisz:
+The script is prepared to work in the background. Run Windows PowerShell **as administrator** in the project folder and type:
 
 ```powershell
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 .\setup_schedule.ps1
 ```
 
-Zadanie automatycznie zapisze się w Twoim Harmonogramie Zadań (Task Scheduler). Od teraz Twój komputer będzie codziennie rano pobierał maile z ostatnich 24 godzin, filtrował je i oflagowywał oszustów.
+The task will automatically be saved in your Windows Task Scheduler. From now on, your computer will daily download emails from the last 24 hours, filter them, and flag suspicious ones.
 
 ---
-*⚠️ Zastrzeżenie: Ten projekt jest narzędziem wspomagającym i bazuje na heurystyce. Żaden automat nie daje 100% pewności, dlatego zawsze zachowaj zdrowy rozsądek i czujność przy klikaniu w linki.*
+*⚠️ Disclaimer: This project is a supporting tool based on heuristics. No automation provides 100% certainty, so always use common sense and be vigilant when clicking links in emails.*
