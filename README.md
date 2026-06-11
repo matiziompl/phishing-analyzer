@@ -44,7 +44,7 @@ For the script to safely read your mailbox without entering a password, you must
 
 To download and analyze the last 15 messages, run:
 ```bash
-python analyzer.py --count 15
+python phishing-analyzer.py --count 15
 ```
 
 On the first run, a browser window will open asking you to log in with your Gmail account. After confirming permissions, a new `token.json` file will appear next to the script, and the system will generate a report.
